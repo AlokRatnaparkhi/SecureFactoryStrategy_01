@@ -14,12 +14,15 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.security.SQLi;
+import com.security.XSS;
 /**
  * @purpose DBManager is responsible for exchanging information with DB
  * @author Darren
  *
  */
-public class DBManager {
+public class DBManager {	
+
 	User user = new User();
     Connection conn = null;            
     Statement stmt = null;  

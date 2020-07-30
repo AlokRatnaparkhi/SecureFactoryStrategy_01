@@ -6,7 +6,9 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
- 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.servlet.ServletException;
@@ -19,6 +21,9 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.security.SQLi;
+import com.security.SecurityType;
+import com.security.XSS;
 
 /**
  * @purpose UserInformation Servlet is in charge of communicate with Client side
@@ -50,7 +55,21 @@ public class UserInformation extends HttpServlet {
 		String userPass = request.getParameter("userPass");
 		String protection = request.getParameter("protection");
 		 
-        PrintWriter out = response.getWriter();
+		SecurityContext context;
+		
+		
+		List<SecurityStrategy> strategy=new ArrayList<>(); 
+		
+		strategy.add(SecurityFactory.getStrategy(SecurityType.SQLi));
+		strategy.add(SecurityFactory.getStrategy(SecurityType.XSS));
+		  
+		for(SecurityStrategy s:strategy) { 
+			context=new SecurityContext(s);
+		  	context.executeSecurityStrategy(request, response);
+		  
+		  }
+			
+		PrintWriter out = response.getWriter();
         response.setContentType("text/html");
         response.setHeader("Cache-control", "no-cache, no-store");
         response.setHeader("Pragma", "no-cache");
