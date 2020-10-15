@@ -21,7 +21,11 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.security.AbstractSecureStrategyFactory;
+import com.security.ConcreteSecureStrategyFactory;
 import com.security.SQLi;
+import com.security.SecurityContext;
+import com.security.SecurityStrategy;
 import com.security.SecurityType;
 import com.security.XSS;
 
@@ -56,13 +60,13 @@ public class UserInformation extends HttpServlet {
 		String protection = request.getParameter("protection");
 		 
 		SecurityContext context;
-		
+		AbstractSecureStrategyFactory factory=new ConcreteSecureStrategyFactory();
 		
 		List<SecurityStrategy> strategy=new ArrayList<>(); 
 		
-		strategy.add(SecurityFactory.getStrategy(SecurityType.SQLi));
-		strategy.add(SecurityFactory.getStrategy(SecurityType.XSS));
-		  
+		strategy.add(factory.getSQLiStrategy());
+		strategy.add(factory.getXSSStrategy());
+		
 		for(SecurityStrategy s:strategy) { 
 			context=new SecurityContext(s);
 		  	context.executeSecurityStrategy(request, response);
